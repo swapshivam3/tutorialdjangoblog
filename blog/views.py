@@ -62,7 +62,7 @@ class PostDeleteView(LoginRequiredMixin,UserPassesTestMixin,DeleteView):
             return True
         return False
         
-def verification_smtp(requst):
+def verification_smtp(request):
     return render(request,'blog/b0d5ca0798bf6a4356b249b97a35ab2d.html')
 
 def about(request):
