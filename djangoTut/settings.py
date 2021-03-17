@@ -27,12 +27,13 @@ SECRET_KEY = '1p#=v)qioyl^qx(qp5k#8(l1^!)e+9(kzi=nvo#1ce+^!qg+z%'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ["tutorialblogapp.herokuapp.com"]
+ALLOWED_HOSTS = []
 
 
 # Application definition
 
 INSTALLED_APPS = [
+    'anymail',
     'users.apps.UsersConfig',
     'crispy_forms',
     'blog.apps.BlogConfig',
@@ -42,6 +43,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'storages',
 ]
 
 MIDDLEWARE = [
@@ -123,7 +125,7 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/3.1/howto/static-files/
 
 STATIC_URL = '/static/'
-STATIC_ROOT=os.path.join(BASE_DIR, 'staticfiles' )
+# STATIC_ROOT=os.path.join(BASE_DIR, 'staticfiles' )
 
 
 
@@ -134,9 +136,28 @@ LOGIN_URL='login'
 
 MEDIA_ROOT=os.path.join(BASE_DIR, 'media' )
 MEDIA_URL='/media/'
-EMAIL_BACKEND='django.core.mail.backends.smtp.EmailBackend'
-EMAIL_HOST='smtp.gmail.com'
+EMAIL_BACKEND = "anymail.backends.sendinblue.EmailBackend"
+
+ANYMAIL = {
+    "SENDINBLUE_API_KEY": "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",
+}
+SENDINBLUE_API_URL = "https://api.sendinblue.com/v3/"
+
+
+EMAIL_HOST='smtp-relay.sendinblue.com'
 EMAIL_PORT=587
 EMAIL_USE_TLS= True
-EMAIL_HOST_USER='06xus0@gmail.com'
-EMAIL_HOST_PASSWORD="Password'sPassword"
+EMAIL_HOST_USER='swapshivam3@gmail.com'
+DEFAULT_FROM_EMAIL='swapshivam3@gmail.com'
+EMAIL_HOST_PASSWORD='5nOZNQJHGRzS4yvk'
+
+AWS_ACCESS_KEY_ID=os.environ.get('AWS_ACCESS_KEY_ID')
+AWS_SECRET_ACCESS_KEY=os.environ.get('AWS_SECRET_ACCESS_KEY')
+AWS_STORAGE_BUCKET_NAME=os.environ.get('AWS_STORAGE_BUCKET_NAME')
+AWS_S3_FILE_OVERWRITE=False
+AWS_DEFAULT_ACL=None
+
+DEFAULT_FILE_STORAGE='storages.backends.s3boto3.S3Boto3Storage'
+# django_heroku.settings(locals())
+# S3_USE_SIGV4 = True
+# AWS_S3_HOST = 'ap-south-1'
