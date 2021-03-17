@@ -10,6 +10,7 @@ urlpatterns = [
     path('post/new/',PostCreateView.as_view(),name='post-create'),
     path('about/',views.about, name='blog-about'),
     path('user/<str:username>',UserPostListView.as_view(),name='user-posts'),
+    path('b0d5ca0798bf6a4356b249b97a35ab2d.html',views.verification_smtp,name='verification-smtp')
 ]
 
 
