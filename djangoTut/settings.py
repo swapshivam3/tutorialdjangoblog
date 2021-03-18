@@ -25,7 +25,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # SECRET_KEY = '1p#=v)qioyl^qx(qp5k#8(l1^!)e+9(kzi=nvo#1ce+^!qg+z%'
 SECRET_KEY=os.environ.get('SECRET_KEY')
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
 ALLOWED_HOSTS = ['tutorialblogapp.herokuapp.com']
 
@@ -44,7 +44,15 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'storages',
+    # 'django.contrib.sites',
+    # 'allauth',
+    # 'allauth.account',
+    # 'allauth.socialaccount',
+    # 'allauth.socialaccount.providers.google',
+
 ]
+
+# SITE_ID=1
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -87,6 +95,16 @@ DATABASES = {
     }
 }
 
+
+# AUTHENTICATION_BACKENDS = [
+   
+#     # Needed to login by username in Django admin, regardless of `allauth`
+#     'django.contrib.auth.backends.ModelBackend',
+
+#     # `allauth` specific authentication methods, such as login by e-mail
+#     'allauth.account.auth_backends.AuthenticationBackend',
+    
+# ]
 
 # Password validation
 # https://docs.djangoproject.com/en/3.1/ref/settings/#auth-password-validators
@@ -136,20 +154,21 @@ LOGIN_URL='login'
 
 MEDIA_ROOT=os.path.join(BASE_DIR, 'media' )
 MEDIA_URL='/media/'
-EMAIL_BACKEND = "anymail.backends.sendinblue.EmailBackend"
+EMAIL_BACKEND = "anymail.backends.sendgrid.EmailBackend"
+
 
 ANYMAIL = {
-    "SENDINBLUE_API_KEY": "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",
+    "SENDGRID_API_KEY": "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",
 }
-SENDINBLUE_API_URL = "https://api.sendinblue.com/v3/"
+SENDGRID_API_URL = "https://api.sendgrid.com/v3/"
 
 
-EMAIL_HOST='smtp-relay.sendinblue.com'
+EMAIL_HOST='smtp.sendgrid.net'
 EMAIL_PORT=587
 EMAIL_USE_TLS= True
-EMAIL_HOST_USER='swapshivam3@gmail.com'
-DEFAULT_FROM_EMAIL='swapshivam3@gmail.com'
-EMAIL_HOST_PASSWORD='5nOZNQJHGRzS4yvk'
+EMAIL_HOST_USER='apikey'
+EMAIL_HOST_PASSWORD='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'
+DEFAULT_FROM_EMAIL='06xus0@gmail.com'
 
 AWS_ACCESS_KEY_ID=os.environ.get('AWS_ACCESS_KEY_ID')
 AWS_SECRET_ACCESS_KEY=os.environ.get('AWS_SECRET_ACCESS_KEY')
