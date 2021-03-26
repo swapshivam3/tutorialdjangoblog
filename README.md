@@ -1,2 +1,2 @@
 # tutorialdjangoblog
-Made while learning django, hosted on tutorialblogapp.herokuapp.com
+Made while learning django, hosted [here](http://tutorialblogapp.herokuapp.com)
