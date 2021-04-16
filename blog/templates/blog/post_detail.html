@@ -15,4 +15,19 @@
             <p class="article-content">{{ object.content }}</p>
           </div>
         </article>
+        <h2><div class="article-title">Comments</div></h2>
+        {% for comment in object.comments.all %}
+        <article class="media content-section">
+        <img class="rounded-circle article-img" src="{{ comment.author.profile.image.url }}">
+          <div class="comment">
+            <div class="date">{{ comment.created_date }}</div>
+            <a class="mr-2" href="{% url 'user-posts' comment.author %}">{{ comment.author }}</a>
+            <p class=article-content>{{ comment.text }}</p>
+          </div>
+    </article>
+{% empty %}
+    <p>No comments here yet</p>
+  </article>
+{% endfor %}
+<a class="btn btn-secondary btn-sm mt-1 mb-1" href="{% url 'add_comment_to_post' pk=post.pk %}">Add comment</a>
 {% endblock content %}

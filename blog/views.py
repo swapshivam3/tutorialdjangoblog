@@ -1,9 +1,12 @@
-from django.shortcuts import render, get_object_or_404
+from django.shortcuts import render, get_object_or_404,redirect
 from django.views.generic import ListView,DetailView,CreateView,UpdateView,DeleteView
 from django.contrib.auth.models import User
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
-from .models import Post
+from django.contrib.auth.decorators import login_required
+from .forms import CommentForm
+from .models import Post,Comment
 from django.core.paginator import Paginator
+
 
 def home(request):
     context={
@@ -62,8 +65,34 @@ class PostDeleteView(LoginRequiredMixin,UserPassesTestMixin,DeleteView):
             return True
         return False
         
+class CommentCreateView(LoginRequiredMixin,CreateView):
+    model=Comment
+    template_name='blog/comment_form.html'
+    fields=['content']
+    def form_valid(self,form):
+        form.instance.author=self.request.user
+        return super().form_valid(form) 
+
+
+
 def verification_smtp(request):
     return render(request,'blog/b0d5ca0798bf6a4356b249b97a35ab2d.html')
 
 def about(request):
     return render(request,'blog/about.html')
+
+@login_required
+def add_comment_to_post(request, pk):
+    
+    post = get_object_or_404(Post, pk=pk)
+    if request.method == "POST":
+        form = CommentForm(request.POST)
+        form.instance.author=request.user
+        if form.is_valid():
+            comment = form.save(commit=False)
+            comment.post = post
+            comment.save()
+            return redirect('post-detail', pk=post.pk)
+    else:
+        form = CommentForm()
+    return render(request, 'blog/add_comment_to_post.html', {'form': form})
