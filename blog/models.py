@@ -16,3 +16,23 @@ class Post(models.Model):
 
     def get_absolute_url(self):
         return reverse('post-detail',kwargs={'pk':self.pk})
+
+class Comment(models.Model):
+    post = models.ForeignKey('blog.Post', on_delete=models.CASCADE, related_name='comments')
+    author=models.ForeignKey(User, on_delete=models.CASCADE)
+    text = models.TextField()
+    created_date = models.DateTimeField(default=timezone.now)
+
+    def __str__(self):
+        return self.text
+
+# content=models.TextField()
+#     date_posted=models.DateTimeField(default=timezone.now)
+#     author=models.ForeignKey(User, on_delete=models.CASCADE)
+
+#     def __str__(self):                          #redirect isnt used, we need to return a string,django already has the redirect built in
+#         return self.title
+
+
+#     def get_absolute_url(self):
+#         return reverse('post-detail',kwargs={'pk':self.pk})
