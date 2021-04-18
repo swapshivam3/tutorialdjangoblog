@@ -168,15 +168,6 @@ MEDIA_URL='/media/'
 EMAIL_BACKEND = "anymail.backends.sendgrid.EmailBackend"
 
 
-ANYMAIL = {
-    "SENDGRID_API_KEY": "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",
-}
-SENDGRID_API_URL = "https://api.sendgrid.com/v3/"
-
-
-EMAIL_HOST='smtp.sendgrid.net'
-EMAIL_PORT=587
-EMAIL_USE_TLS= True
 
 AWS_ACCESS_KEY_ID=os.environ.get('AWS_ACCESS_KEY_ID')
 AWS_SECRET_ACCESS_KEY=os.environ.get('AWS_SECRET_ACCESS_KEY')
