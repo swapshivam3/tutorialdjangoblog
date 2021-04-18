@@ -10,6 +10,8 @@
                 <a class="btn btn-secondary btn-sm mt-1 mb-1" href="{%url 'post-update' object.id %}">Update</a>
                 <a class="btn btn-danger btn-sm mt-1 mb-1" href="{%url 'post-delete' object.id %}">Delete Post</a>
               {% endif %}
+              <a class="btn btn-secondary btn-sm mt-1 mb-1" href="{% url 'like' pk=post.pk %}">Like Post</a>
+              <small class=text-muted">{{object.likes}} Likes</small>
               </div>
             <h2><a class="article-title">{{ object.title }}</a></h2>
             <p class="article-content">{{ object.content }}</p>
