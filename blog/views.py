@@ -2,7 +2,7 @@ from django.shortcuts import render, get_object_or_404,redirect
 from django.views.generic import ListView,DetailView,CreateView,UpdateView,DeleteView
 from django.contrib.auth.models import User
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
-from django.contrib.auth.decorators import login_required
+from django.contrib.auth.decorators import login_required,user_passes_test
 from .forms import CommentForm
 from .models import Post,Comment
 from django.core.paginator import Paginator
@@ -84,6 +84,10 @@ def verification_smtp(request):
 def about(request):
     return render(request,'blog/about.html')
 
+def check_user(user):
+    return user.username=='admin' 
+
+@user_passes_test(check_user)
 def export(request):
     response = HttpResponse(content_type='application/ms-excel')
     response['Content-Disposition'] = 'attachment; filename="users.xls"'
@@ -141,6 +145,10 @@ def like_post(request,pk):
     post.likes+=1
     post.save()
     return redirect('post-detail',pk=post.pk)
+
+class DatabaseView(ListView):
+    model=Post
+    template_name='blog/database.html'
 
 
 @login_required
