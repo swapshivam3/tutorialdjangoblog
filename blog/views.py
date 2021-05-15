@@ -3,12 +3,12 @@ from django.views.generic import ListView,DetailView,CreateView,UpdateView,Delet
 from django.contrib.auth.models import User
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.contrib.auth.decorators import login_required,user_passes_test
-from .forms import CommentForm
-from .models import Post,Comment
+from .forms import CommentForm, Upload_XLForm
+from .models import Post,Comment,Upload_XL
 from django.core.paginator import Paginator
 from django.views.generic.base import TemplateView
 from django.http import HttpResponse
-import xlwt
+import xlwt,xlrd
 
 
 def home(request):
@@ -140,6 +140,21 @@ def export(request):
     return response
 
 
+@user_passes_test(check_user)
+def upload_xls(request):
+    form=Upload_XLForm(request.POST or None, request.FILES or None)
+    if form.is_valid():
+        form.save()
+        form=Upload_XLForm()
+        obj=Upload_XL.objects.get(activated=False)
+        book = xlrd.open_workbook(obj.file_name.path)
+        sh=book.sheet_by_index(1)
+        
+
+    return render(request, 'blog/uploadXL.html',{'form':form})
+
+
+
 def like_post(request,pk):
     post=get_object_or_404(Post,pk=pk)
     post.likes+=1
@@ -161,7 +176,7 @@ def add_comment_to_post(request, pk):
         if form.is_valid():
             comment = form.save(commit=False)
             comment.post = post
-            comment.save()
+            comment.save()  
             return redirect('post-detail', pk=post.pk)
     else:
         form = CommentForm()

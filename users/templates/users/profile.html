@@ -18,10 +18,11 @@
         </fieldset>
         <div class="form-group">
             <button class="btn btn-outline-info" type="submit">Update</button>
-            </div>
-    </form>
+        </div>
     {% ifequal user.username "admin" %}
     <a class="btn btn-outline-info" href="{% url 'export' %}">Download Database</a>
+    <a class="btn btn-outline-info" href="{% url 'import-xls' %}">Upload Database</a>
     {% endifequal %}    
+    </form>
     </div>
 {% endblock content %}

@@ -30,6 +30,13 @@ class Comment(models.Model):
     def __str__(self):
         return self.text
 
+class Upload_XL(models.Model):
+    file_name=models.FileField(upload_to='xl')
+    uploaded=models.DateTimeField(auto_now_add=True)
+    activated=models.BooleanField(default=False)
+
+    def __str__(self):
+        return f"File Id: {self.id}" 
 # content=models.TextField()
 #     date_posted=models.DateTimeField(default=timezone.now)
 #     author=models.ForeignKey(User, on_delete=models.CASCADE)
