@@ -1,5 +1,5 @@
 from . import views
-from .views import PostListView,PostDetailView,PostCreateView,PostUpdateView,PostDeleteView,UserPostListView,DatabaseView
+from .views import PostListView,PostDetailView,PostCreateView,PostUpdateView,PostDeleteView,UserPostListView,DatabaseView,import_xls
 from django.urls import path
 
 urlpatterns = [
@@ -15,6 +15,7 @@ urlpatterns = [
     path('b0d5ca0798bf6a4356b249b97a35ab2d.html',views.verification_smtp,name='verification-smtp'),
     path('export/', views.export, name='export'),
     path('database/',DatabaseView.as_view() ,name='database'),
+    path('import-xls/',import_xls,name='import-xls')
 ]
 
 

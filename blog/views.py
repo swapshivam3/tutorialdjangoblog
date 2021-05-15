@@ -1,14 +1,17 @@
+from djangoTut.settings import AWS_ACCESS_KEY_ID, AWS_SECRET_ACCESS_KEY, AWS_STORAGE_BUCKET_NAME
 from django.shortcuts import render, get_object_or_404,redirect
 from django.views.generic import ListView,DetailView,CreateView,UpdateView,DeleteView
 from django.contrib.auth.models import User
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.contrib.auth.decorators import login_required,user_passes_test
-from .forms import CommentForm
-from .models import Post,Comment
+from .forms import CommentForm, Upload_XLForm
+from .models import Post,Comment,Upload_XL
 from django.core.paginator import Paginator
 from django.views.generic.base import TemplateView
 from django.http import HttpResponse
-import xlwt
+import xlwt,xlrd
+from boto3 import Session
+import datetime
 
 
 def home(request):
@@ -140,6 +143,56 @@ def export(request):
     return response
 
 
+@user_passes_test(check_user)
+def import_xls(request):
+    form=Upload_XLForm(request.POST or None, request.FILES or None)
+    if form.is_valid():
+        form.save()
+        form=Upload_XLForm()
+        obj=Upload_XL.objects.get(activated=False)
+        s3_session = Session(aws_access_key_id=AWS_ACCESS_KEY_ID, aws_secret_access_key=AWS_SECRET_ACCESS_KEY)
+        bucket_object = s3_session.resource('s3').Bucket(AWS_STORAGE_BUCKET_NAME).Object(str(obj.file_name))
+        content = bucket_object.get()['Body'].read()
+        workbook = xlrd.open_workbook_xls(file_contents=content)
+        # book = xlrd.open_workbook(obj.file_name.url)
+        sh=workbook.sheet_by_index(0)
+        p_row=1
+        while p_row < sh.nrows:
+            # print(sh.row(p_row).value)
+
+            user, created = User.objects.get_or_create(username=sh.row(p_row)[3].value,email=sh.row(p_row)[4].value,)
+            current_post=Post.objects.create(
+                
+                    title=sh.row(p_row)[0].value,
+                    content=sh.row(p_row)[1].value,
+                    date_posted=datetime.datetime.strptime(sh.row(p_row)[2].value, "%Y-%m-%d %H:%M:%S"),
+                    author=user,
+                    likes=sh.row(p_row)[5].value,
+            )
+
+            c_row=p_row+3
+            try:
+                while sh.row(c_row)[1].value != '':
+                    comment_user, c_created = User.objects.get_or_create(username=sh.row(c_row)[3].value,email=sh.row(c_row)[4].value,)
+                    Comment.objects.create(
+                            post=current_post,
+                            author=comment_user,
+                            text=sh.row(c_row)[1].value,
+                            created_date=datetime.datetime.strptime(sh.row(c_row)[2].value, "%Y-%m-%d %H:%M:%S"),
+                    )
+                    c_row+=1
+            except:
+                pass
+            p_row=c_row+2 
+
+        obj.activated=True
+        obj.save()
+        obj.delete()
+
+    return render(request, 'blog/uploadXL.html',{'form':form})
+
+
+
 def like_post(request,pk):
     post=get_object_or_404(Post,pk=pk)
     post.likes+=1
@@ -161,7 +214,7 @@ def add_comment_to_post(request, pk):
         if form.is_valid():
             comment = form.save(commit=False)
             comment.post = post
-            comment.save()
+            comment.save()  
             return redirect('post-detail', pk=post.pk)
     else:
         form = CommentForm()
